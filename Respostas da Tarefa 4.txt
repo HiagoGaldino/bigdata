@@ -1,0 +1,50 @@
+a) SELECT * from aluno where cre = 5.0
+
+Índice B-Tree (CREATE INDEX idx_cre ON aluno(cre);)
+
+Ideal para buscas de igualdade e intervalos em valores numéricos.
+
+b) SELECT * from aluno where idade < 70
+
+Índice B-Tree (CREATE INDEX idx_idade ON aluno(idade);)
+
+O B-Tree é eficiente em consultas com operadores relacionais (<, >, BETWEEN).
+
+c) SELECT * from aluno where idade > 27 and cre < 3.0
+
+Índice Composto B-Tree (CREATE INDEX idx_idade_cre ON aluno(idade, cre);)
+
+O índice composto é útil quando a consulta envolve várias colunas simultaneamente.
+
+d) SELECT avg(idade) from aluno
+
+Índice B-Tree em idade (CREATE INDEX idx_idade ON aluno(idade);)
+
+A média (AVG()) costuma escanear toda a tabela, mas o índice B-Tree pode ajudar em algumas otimizações dependendo do plano de execução.
+
+e) SELECT idade, count(*) from aluno where curso = 'Computação' group by idade
+
+Índice Composto B-Tree (CREATE INDEX idx_curso_idade ON aluno(curso, idade);)
+
+Otimiza a filtragem por curso e a agregação por idade.
+
+f) SELECT * FROM aluno WHERE disciplinas @> '[{"nome": "Cálculo I"}]'
+
+Índice GIN em JSONB (CREATE INDEX idx_disciplinas_gin ON aluno USING gin(disciplinas);)
+
+Índices GIN são ideais para consultas com JSONB e operadores como @>.
+
+g) SELECT * FROM aluno WHERE data_ingresso BETWEEN '2024-01-01' AND '2024-12-31'
+
+Índice B-Tree (CREATE INDEX idx_data_ingresso ON aluno(data_ingresso);)
+
+O B-Tree é eficiente para consultas com intervalos de datas (BETWEEN).
+
+h) SELECT * FROM aluno WHERE ST_DWithin(localizacao, ST_MakePoint(-34.88, -7.12)::GEOMETRY, 1000);
+
+Índice GiST para geometrias (CREATE INDEX idx_localizacao ON aluno USING gist(localizacao);)
+
+O GiST é essencial para consultas espaciais com funções como ST_DWithin().
+
+
+
